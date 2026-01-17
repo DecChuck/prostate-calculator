@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Prostate Volume Calculator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .formula {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            padding-right: 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-weight: 600;
+        }
+        .button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .button:active {
+            opacity: 0.8;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .result-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        .result-volume {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .result-unit {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        .result-details {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .psa-density {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .psa-density-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .psa-density-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .secondary-button {
+            padding: 12px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .secondary-button:active {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Prostate Volume Calculator</h1>
+        <p class="subtitle">Calculate volume from CT scan measurements</p>
+        
+        <div class="formula">
+            <strong>Ellipsoid Formula:</strong><br>
+            Volume = 0.52 × H × W × L
+        </div>
+
+        <div class="input-group">
+            <label for="height">Height</label>
+            <div class="input-wrapper">
+                <input type="number" id="height" step="0.1" placeholder="Enter height" inputmode="decimal">
+                <span class="unit">cm</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="width">Width</label>
+            <div class="input-wrapper">
+                <input type="number" id="width" step="0.1" placeholder="Enter width" inputmode="decimal">
+                <span class="unit">cm</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="length">Length</label>
+            <div class="input-wrapper">
+                <input type="number" id="length" step="0.1" placeholder="Enter length" inputmode="decimal">
+                <span class="unit">cm</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="psa">PSA (Optional)</label>
+            <div class="input-wrapper">
+                <input type="number" id="psa" step="0.01" placeholder="Enter PSA (optional)" inputmode="decimal">
+                <span class="unit">ng/mL</span>
+            </div>
+        </div>
+
+        <button class="button" onclick="calculate()">Calculate Volume</button>
+
+        <div class="result" id="result">
+            <div class="result-title">Calculated Volume</div>
+            <div class="result-volume" id="volume">--</div>
+            <div class="result-unit">cubic centimeters (cc)</div>
+            
+            <div class="result-details">
+                <div class="result-row">
+                    <span>Height:</span>
+                    <span id="displayH">--</span>
+                </div>
+                <div class="result-row">
+                    <span>Width:</span>
+                    <span id="displayW">--</span>
+                </div>
+                <div class="result-row">
+                    <span>Length:</span>
+                    <span id="displayL">--</span>
+                </div>
+            </div>
+
+            <div class="psa-density" id="psaDensity" style="display: none;">
+                <div class="psa-density-title">PSA Density</div>
+                <div class="psa-density-value" id="densityValue">--</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="secondary-button" onclick="copyResult()">📋 Copy</button>
+                <button class="secondary-button" onclick="reset()">🔄 New</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const h = parseFloat(document.getElementById('height').value);
+            const w = parseFloat(document.getElementById('width').value);
+            const l = parseFloat(document.getElementById('length').value);
+            const psa = parseFloat(document.getElementById('psa').value);
+            
+            if (!h || h <= 0 || !w || w <= 0 || !l || l <= 0) {
+                alert('Please enter valid positive numbers for all measurements');
+                return;
+            }
+            
+            const volume = (0.52 * h * w * l).toFixed(2);
+            
+            document.getElementById('volume').textContent = volume;
+            document.getElementById('displayH').textContent = h.toFixed(2) + ' cm';
+            document.getElementById('displayW').textContent = w.toFixed(2) + ' cm';
+            document.getElementById('displayL').textContent = l.toFixed(2) + ' cm';
+            
+            // Calculate PSA density if PSA is provided
+            const psaDensitySection = document.getElementById('psaDensity');
+            if (psa && psa > 0) {
+                const density = (psa / volume).toFixed(3);
+                document.getElementById('densityValue').textContent = density + ' ng/mL/cc';
+                psaDensitySection.style.display = 'block';
+            } else {
+                psaDensitySection.style.display = 'none';
+            }
+            
+            document.getElementById('result').classList.add('show');
+            
+            setTimeout(() => {
+                document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+        
+        function copyResult() {
+            const h = document.getElementById('height').value;
+            const w = document.getElementById('width').value;
+            const l = document.getElementById('length').value;
+            const v = document.getElementById('volume').textContent;
+            const psa = document.getElementById('psa').value;
+            
+            let text = `Prostate Volume: ${v} cc\nH: ${h} cm, W: ${w} cm, L: ${l} cm`;
+            
+            if (psa && parseFloat(psa) > 0) {
+                const density = document.getElementById('densityValue').textContent;
+                text += `\nPSA: ${psa} ng/mL\nPSA Density: ${density}`;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✓ Copied to clipboard!');
+            }).catch(() => {
+                alert('Unable to copy');
+            });
+        }
+        
+        function reset() {
+            document.getElementById('height').value = '';
+            document.getElementById('width').value = '';
+            document.getElementById('length').value = '';
+            document.getElementById('psa').value = '';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('psaDensity').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
