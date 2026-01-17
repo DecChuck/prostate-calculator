@@ -132,6 +132,25 @@
             justify-content: space-between;
             margin-bottom: 8px;
         }
+        .psa-density {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .psa-density-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .psa-density-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -187,6 +206,14 @@
             </div>
         </div>
 
+        <div class="input-group">
+            <label for="psa">PSA (Optional)</label>
+            <div class="input-wrapper">
+                <input type="number" id="psa" step="0.01" placeholder="Enter PSA (optional)" inputmode="decimal">
+                <span class="unit">ng/mL</span>
+            </div>
+        </div>
+
         <button class="button" onclick="calculate()">Calculate Volume</button>
 
         <div class="result" id="result">
@@ -209,6 +236,11 @@
                 </div>
             </div>
 
+            <div class="psa-density" id="psaDensity" style="display: none;">
+                <div class="psa-density-title">PSA Density</div>
+                <div class="psa-density-value" id="densityValue">--</div>
+            </div>
+
             <div class="action-buttons">
                 <button class="secondary-button" onclick="copyResult()">📋 Copy</button>
                 <button class="secondary-button" onclick="reset()">🔄 New</button>
@@ -221,6 +253,7 @@
             const h = parseFloat(document.getElementById('height').value);
             const w = parseFloat(document.getElementById('width').value);
             const l = parseFloat(document.getElementById('length').value);
+            const psa = parseFloat(document.getElementById('psa').value);
             
             if (!h || h <= 0 || !w || w <= 0 || !l || l <= 0) {
                 alert('Please enter valid positive numbers for all measurements');
@@ -233,6 +266,17 @@
             document.getElementById('displayH').textContent = h.toFixed(2) + ' cm';
             document.getElementById('displayW').textContent = w.toFixed(2) + ' cm';
             document.getElementById('displayL').textContent = l.toFixed(2) + ' cm';
+            
+            // Calculate PSA density if PSA is provided
+            const psaDensitySection = document.getElementById('psaDensity');
+            if (psa && psa > 0) {
+                const density = (psa / volume).toFixed(3);
+                document.getElementById('densityValue').textContent = density + ' ng/mL/cc';
+                psaDensitySection.style.display = 'block';
+            } else {
+                psaDensitySection.style.display = 'none';
+            }
+            
             document.getElementById('result').classList.add('show');
             
             setTimeout(() => {
@@ -245,8 +289,14 @@
             const w = document.getElementById('width').value;
             const l = document.getElementById('length').value;
             const v = document.getElementById('volume').textContent;
+            const psa = document.getElementById('psa').value;
             
-            const text = `Prostate Volume: ${v} cc\nH: ${h} cm, W: ${w} cm, L: ${l} cm`;
+            let text = `Prostate Volume: ${v} cc\nH: ${h} cm, W: ${w} cm, L: ${l} cm`;
+            
+            if (psa && parseFloat(psa) > 0) {
+                const density = document.getElementById('densityValue').textContent;
+                text += `\nPSA: ${psa} ng/mL\nPSA Density: ${density}`;
+            }
             
             navigator.clipboard.writeText(text).then(() => {
                 alert('✓ Copied to clipboard!');
@@ -259,7 +309,9 @@
             document.getElementById('height').value = '';
             document.getElementById('width').value = '';
             document.getElementById('length').value = '';
+            document.getElementById('psa').value = '';
             document.getElementById('result').classList.remove('show');
+            document.getElementById('psaDensity').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
